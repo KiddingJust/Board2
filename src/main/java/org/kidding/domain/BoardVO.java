@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class BoardVO {
 
-	private Integer bno;
-	private String title, content, writer;
+	private Integer bno, mno, likenum, hatenum, readnum;
+	private String title, content, writer, deleted;
 	private Date regdate, updatedate;
 }

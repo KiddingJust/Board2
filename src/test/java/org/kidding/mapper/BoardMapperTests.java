@@ -2,6 +2,7 @@ package org.kidding.mapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kidding.domain.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -19,7 +20,11 @@ public class BoardMapperTests {
 	
 	@Test
 	public void TestList() {
-		log.info(mapper.getList());
+		
+		PageParam param = new PageParam();
+		param.setTotal(329);
+		param.setPage(3);
+		log.info(mapper.getList(param));
 	}
 	
 }
