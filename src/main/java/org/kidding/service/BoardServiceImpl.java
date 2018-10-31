@@ -20,11 +20,32 @@ public class BoardServiceImpl implements BoardService {
 	public List<BoardVO> getList(PageParam param) {
 		return mapper.getList(param);
 	}
+	@Override
+	public BoardVO getRead(PageParam param) {
+		return mapper.getRead(param);
+	}
+	
+	@Override
+	public int getTotal(PageParam param) {
+		return mapper.getTotal(param);
+	}
 
 	@Override
-	public int getTotal() {
-		return mapper.getTotal();
+	public int register(BoardVO vo) {
+		return mapper.register(vo);
 	}
+	
+	@Override
+	public int modify(BoardVO vo) {
+		return mapper.modify(vo);
+	}
+	@Override
+	public int delete(PageParam param) {
+		return mapper.delete(param);
+	}
+
+
+
 
 	
 }

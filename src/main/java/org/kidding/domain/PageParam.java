@@ -10,7 +10,6 @@ public class PageParam {
 	private static final double PER = 10.0;
 	private int page;
 	private int display;
-
 	private int total, start, end, bno;
 	private boolean prev, next;
 
@@ -27,6 +26,16 @@ public class PageParam {
 		this.display = 10;
 	}
 	
+	public void setType(String type) {
+		this.type = type;
+		
+		if(type == null || type.trim().length() == 0) { 
+			this.types = null;
+			return;
+		}
+		this.types = type.split("");
+	}
+	
 	//total을 파라미터로 받아서 페이지 및 prev, next 조정
 	public void setTotal(int total) {
 		this.total = total;
@@ -34,8 +43,8 @@ public class PageParam {
 		this.start = this.end - 9;
 		
 		//this.end는 10, 20, 30 상태. 여기에 10을 곱한 게 전체 총 갯수보다 크면 end를 수정해주어야 함.
-		if( (this.end*10) > total) {
-			this.end =(int) (Math.ceil(total / PER));
+		if( (this.end*this.display) > total) {
+			this.end =(int) (Math.ceil(total / (double) this.display));
 			this.next = false;
 		}else {
 			this.next = true;
@@ -44,7 +53,7 @@ public class PageParam {
 	}
 	
 	public int getSkip() {
-		return (this.page - 1) * 10;
+		return (this.page - 1) * this.display;
 	}
 	
 	//test

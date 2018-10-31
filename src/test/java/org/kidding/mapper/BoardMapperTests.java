@@ -2,6 +2,7 @@ package org.kidding.mapper;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.kidding.domain.BoardVO;
 import org.kidding.domain.PageParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
@@ -27,4 +28,50 @@ public class BoardMapperTests {
 		log.info(mapper.getList(param));
 	}
 	
+	@Test
+	public void insert() {
+		
+		BoardVO vo = new BoardVO();
+		vo.setTitle("랄랄랄라");
+		vo.setWriter("가무새");
+		vo.setContent("왜 안될가?");
+		
+		log.info(mapper.register(vo));
+	}
+
+	@Test
+	public void testRead() {
+		
+		PageParam param = new PageParam();
+		param.setBno(252);
+		
+		log.info(mapper.getRead(param));
+//		mapper.getList(param).forEach(board -> log.info(board));
+	}
+	
+	@Test
+	public void updateTest() {
+		
+		BoardVO vo = new BoardVO();
+		vo.setTitle("수정합니다 수정");
+		vo.setContent("가무새 수정본");
+		vo.setBno(269);
+		
+		log.info(mapper.modify(vo));
+//		mapper.getList(param).forEach(board -> log.info(board));
+	}
+	
+//	@Test
+//	public void testSearch() {
+//		
+//		PageParam pageParam = new PageParam();
+//		
+//		pageParam.setType("w");
+//		pageParam.setKeyword("fasdgaf");
+//		
+//		pageParam.setExtend(false);
+//		
+//		log.info(mapper.getList(pageParam));
+//		log.info(mapper.getTotal(pageParam));
+//	}
 }

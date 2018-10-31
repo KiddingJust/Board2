@@ -6,12 +6,69 @@
  
  <!-- 인터페이스와 동일하게 이름을 맞추어주어야 함. 메소드 이름은 id-->
  <mapper namespace="org.kidding.mapper.BoardMapper">
- 
- 	<select id="getList" resultType="org.kidding.domain.BoardVO">
-		select * from tbl_board order by bno desc limit ${skip}, 10
- 	</select>
  	
  	<select id="getTotal" resultType="Integer">
- 		select count(*) from tbl_board;
+ 		select count(*) from tbl_board
+ 		<where>
+ 		deleted = 'N'
+    	<if test="types != null">
+		<foreach item="item" collection="types" open="AND (" close=")" separator="OR">
+		
+		<if test="item == 't'.toString()">
+		title like concat('%', #{keyword}, '%')
+		</if>
+		<if test="item == 'c'.toString()">
+		content like concat('%', #{keyword}, '%')
+		</if>
+		<if test="item == 'w'.toString()">
+		writer like concat('%', #{keyword}, '%')
+		</if>
+	
+	</foreach>
+	</if>
+		</where>
  	</select>
+ 	
+ 	<insert id="register">
+		insert into tbl_board (title, content, writer) values (#{title}, #{content}, #{writer})
+
+ 	</insert>
+ 	
+ 	<select id="getRead" resultType="org.kidding.domain.BoardVO">
+		select * from tbl_board where bno = #{bno}
+ 	</select>
+ 	
+ 	<update id="modify">
+		update tbl_board set title = #{title}, content = #{content} where bno = #{bno}
+ 	</update>
+ 	 	
+ 	<delete id="delete">
+ 		update tbl_board set deleted='Y' where bno = #{bno}
+ 	</delete>
+ 	
+ 	
+ 	<select id="getList" resultType="org.kidding.domain.BoardVO">
+	select * from tbl_board 
+		<where>
+		deleted = 'N'
+    	<if test="types != null">
+		<foreach item="item" collection="types" open="AND (" close=")" separator="OR">
+		
+		<if test="item == 't'.toString()">
+		title like concat('%', #{keyword}, '%')
+		</if>
+		<if test="item == 'c'.toString()">
+		content like concat('%', #{keyword}, '%')
+		</if>
+		<if test="item == 'w'.toString()">
+		writer like concat('%', #{keyword}, '%')
+		</if>
+	
+	</foreach>
+	</if>
+		</where>
+		order by bno desc limit ${skip}, ${display}
+ 	</select>
+
+ 	
  </mapper>
