@@ -2,6 +2,7 @@ package org.kidding.mapper;
 
 import java.util.List;
 
+import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
 import org.kidding.domain.PageParam;
 
@@ -25,5 +26,13 @@ public interface BoardMapper {
 	//삭제하기 (delete)
 	public int delete(PageParam param);
 
-
+	//첨부파일 넣기
+	public void insert(BoardAttachVO vo);
+	
+	//첨부파일 삭제
+	public void deleteFile(String uuid);
+	
+	//첨부파일 불러오기
+	public List<BoardAttachVO> findByBno(Long bno);
+	
 }

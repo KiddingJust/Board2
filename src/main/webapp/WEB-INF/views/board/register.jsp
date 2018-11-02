@@ -5,6 +5,29 @@
 
 <%@include file="../includes/header.jsp"%>
 
+<style>
+	.uploadResult {
+	width: 100%;
+	background-color: white;
+	}
+	
+	.uploadResult ul{
+	display:flex;
+	flex-flow: row;
+	justify-content: center;
+	align-items: center;
+	}
+	
+	.uploadResult ul li {
+	list-style: none;
+	padding: 10px;
+	}
+	
+	.uploadResult ul li img{
+	width: 20px;
+	}
+	
+</style>
 
 <!-- End Navbar -->
 <div class="panel-header panel-header-sm"></div>
@@ -55,8 +78,16 @@
 									<div class='uploadDiv'>
 										<input type="file" name="uploadFile" multiple>
 									</div>
+									<div>
+									<div class='uploadResult'>
+										<ul>
+										</ul>
+									</div>
+									</div>
+									<button id = 'uploadBtn'>upload</button>
 							</div>
 						</div>
+						
 
 
 						<div class="row">
@@ -128,13 +159,84 @@
 			actionForm.attr("action", "/board/list").attr("method", "get").submit();
 		});
 
-		$("#registerBtn").on("click", function(e){
+		var uploadResult = $(".uploadResult ul");
+		
+		function showUploadedFile(uploadResultArr) {
 			
-			var title = $("input[name='title']").val();
-			var writer = $("input[name='writer']").val();
-		    var content = $("input[name='content']").val();
+			if(!uploadResultArr || uploadResultArr.length == 0){return;}
 			
-		    
+			var uploadUL = $(".uploadResult ul");
+			
+			var str = "";
+			
+			$(uploadResultArr).each(function(i, obj){
+				
+				if(!obj.image) {
+					
+					var fileCallPath = encodeURIComponent(obj.uploadPath + "/" + obj.uuid + "_" + obj.fileName);
+					
+					
+					str += "<li "
+					str += "data-path='" + obj.uploadPath + "' data-uuid='"+obj.uuid+"' data-filename='" + obj.fileName + "'data-type='"+obj.image+"'><div>";
+					str += "<span>" + obj.fileName + "</span>";
+					str += "<button type='button data-file=\'"+fileCallPath+"\'data-type='file' class='btn btn-warning btn-circle'><i class='fa fa-times'></i></button></br>";
+					str += "<img src='/resources/img/attach.png'></a>";
+					str += "</div>";
+					str + "</li>";
+					
+					
+					// str += "<li><a href='/download?fileName="+fileCallPath+"'><img src='/resources/img/attach.PNG'>"+obj.fileName+"</a>" +
+					//"<span data-file=\'"+fileCallPath+"\' data-type='file'> x </span>" + "</li>";
+
+					//str += "<li><img src='/resources/img/attach.png'>" + obj.fileName + "</li>";					
+				}else {
+					console.log(obj.fileName);
+					//str += "<li>" + obj.fileName + "</li>";
+					var fileCallPath = encodeURIComponent(obj.uploadPath + "/s_" + obj.uuid + "_" + obj.fileName);
+					
+					str += "<li data-path='" + obj.uploadPath + "'";
+					str += "data-uuid='"+obj.uuid+"' data-filename='" + obj.fileName + "'data-type='"+obj.image+"'"
+					str += " ><div>";
+					str += "<span>" + obj.fileName +"</span>";
+					str += "<button type = 'button' data-file=\'"+fileCallPath+"\'data-type='image' class='btn btn-warning btn-circle'><i class ='fa fa-times'></i></button><br>";
+					str += "<img src='/display?fileName=" + fileCallPath+"'>";
+					str += "</div>";
+					str + "</li>";
+					
+					//str += "<li><a href='/download?fileName="+fileCallPath+"'>" + "<img src='/display?fileName="+fileCallPath+"'></a>"+
+							//"<span data-file=\'"+fileCallPath+"\' data-type='image'> x </span>" + "</li>";
+				}
+			});
+			uploadResult.append(str);
+		};
+		
+		$(".uploadResult").on("click", "button", function(e){
+			
+			var targetFile = $(this).data("file");
+			var type = $(this).data("type");
+			var targetLi = $(this).closest("li");
+			console.log(targetFile);
+			
+			$.ajax({
+				url: '/deleteFile',
+				data: {fileName: targetFile, type:type},
+				dataType: 'text',
+				type: 'POST',
+					success: function(result){
+						alert(result);
+						targetLi.remove();
+					}
+			}); // $.ajax
+			
+		});
+		
+		
+		
+		var cloneObj = $(".uploadDiv").clone();
+		
+		$("#uploadBtn").on("click", function(e){
+			
+			
 			//jQuery를 사용하는 경우 파일 업로드는 FormData라는 객체를 이용하게 된다. 
 			//이는 가상의 form태그와 같다고 생각하면 된다. (필요한 파라미터를 담아서 전송하는 방식)
 			var formData = new FormData();
@@ -154,23 +256,49 @@
 			
 			
 			$.ajax({
-				url: "/board/upload",
+				url: "/upload",
 				processData: false,
 				contentType: false,
 				data: formData,
 				type: 'POST',
+				dataType: 'json',
 				success: function(result){
-					alert("Uploaded");
+					console.log(result);
+					
+					showUploadedFile(result);
+					
+					$(".uploadDiv").html(cloneObj.html());
 				}
 			}); // end ajax
-		    
-		    actionForm.append("<input type='hidden' name='title' value='"+title+"'>");
-		    actionForm.append("<input type='hidden' name='writer' value='"+writer+"'>");
-		    actionForm.append("<input type='hidden' name='content' value='"+content+"'>");
-			
-			actionForm.attr("action", "/board/register").attr("method", "post").submit();
-
 		});
+			
+		$("#registerBtn").on("click", function(e){
+			
+			var title = $("input[name='title']").val();
+			var writer = $("input[name='writer']").val();
+		    var content = $("input[name='content']").val();
+			
+		    var str = "";
+		    $(".uploadResult ul li").each(function(i, obj){
+		    	var jobj = $(obj);
+		    	console.dir(jobj);
+				
+		    	str += "<input type='hidden' name='attachList["+i+"].fileName' value='"+jobj.data("filename")+"'>";
+		    	str += "<input type='hidden' name='attachList["+i+"].uuid' value='"+jobj.data("uuid")+"'>";
+		    	str += "<input type='hidden' name='attachList["+i+"].uploadPath' value='"+jobj.data("path")+"'>";
+		    	str += "<input type='hidden' name='attachList["+i+"].fileType' value='"+jobj.data("type")+"'>";
+
+		    });
+		    
+		    
+			    actionForm.append("<input type='hidden' name='title' value='"+title+"'>");
+			    actionForm.append("<input type='hidden' name='writer' value='"+writer+"'>");
+			    actionForm.append("<input type='hidden' name='content' value='"+content+"'>");
+			    actionForm.append(str);
+				
+				actionForm.attr("action", "/board/register").attr("method", "post").submit();
+
+			});
 		
 	});
 </script>

@@ -18,5 +18,5 @@ public interface BoardService {
 	
 	public int delete(PageParam param);
 	
-
+	
 }

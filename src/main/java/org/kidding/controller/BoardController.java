@@ -49,6 +49,11 @@ public class BoardController {
 	@PostMapping("/register")
 	public String register(BoardVO vo, RedirectAttributes rttr){
 		log.info("POST REGISTER..........");
+		
+		if (vo.getAttachList() != null) {
+			vo.getAttachList().forEach(attach -> log.info(attach));
+		}
+		
 		int result = service.register(vo);
 		
 		rttr.addFlashAttribute("result", result==1?"SUCCESS":"FAIL");
