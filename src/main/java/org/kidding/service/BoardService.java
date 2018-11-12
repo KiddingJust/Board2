@@ -2,6 +2,7 @@ package org.kidding.service;
 
 import java.util.List;
 
+import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
 import org.kidding.domain.PageParam;
 
@@ -18,5 +19,6 @@ public interface BoardService {
 	
 	public int delete(PageParam param);
 	
+	public List<BoardAttachVO> getAttachList(Long bno);
 	
 }

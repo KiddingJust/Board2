@@ -2,11 +2,13 @@ package org.kidding.service;
 
 import java.util.List;
 
+import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
 import org.kidding.domain.PageParam;
 import org.kidding.mapper.BoardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import lombok.Setter;
 import lombok.extern.log4j.Log4j;
@@ -48,22 +50,24 @@ public class BoardServiceImpl implements BoardService {
 //		return mapper.register(vo);
 //	}
 	
-	   @Override
-	   public int register(BoardVO board) {
+       
+	@Transactional
+	@Override
+	public int register(BoardVO board) {
 	      
-	      int result = mapper.register(board);
+		int result = mapper.register(board);
 	      
-	      if(board.getAttachList() == null || board.getAttachList().size() <= 0) {
-	         return result;
-	      }
+		if(board.getAttachList() == null || board.getAttachList().size() <= 0) {
+			return result;
+			}
 	      
-	      board.getAttachList().forEach(attach ->{
-	    	 log.info(attach);
-	    	 attach.setBno(board.getBno());
+	    board.getAttachList().forEach(attach ->{
+	    	log.info(attach);
+	    	attach.setBno(board.getBno());
 	         mapper.insert(attach);
-	      });
-	      return result;
-	   }
+	    });
+	    return result;
+	}
 	
 	
 	@Override
@@ -73,6 +77,13 @@ public class BoardServiceImpl implements BoardService {
 	@Override
 	public int delete(PageParam param) {
 		return mapper.delete(param);
+	}
+	@Override
+	public List<BoardAttachVO> getAttachList(Long bno) {
+		
+		log.info("get Attach list by bno" + bno);
+		
+		return mapper.findByBno(bno);
 	}
 
 

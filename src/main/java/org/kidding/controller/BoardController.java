@@ -1,15 +1,22 @@
 package org.kidding.controller;
 
+import java.util.List;
+
+import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
 import org.kidding.domain.PageParam;
 import org.kidding.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import lombok.Setter;
@@ -60,6 +67,15 @@ public class BoardController {
 		
 		return "redirect:/board/list";
 	}
+	
+	@GetMapping(value = "/getAttachList",
+			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+	@ResponseBody
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+		log.info("getAttachList " + bno );
+		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
+	}
+	
 	
 	@GetMapping({"/read", "/modify"})
 	public void read(@ModelAttribute("pageObj") PageParam param, Model model) {
