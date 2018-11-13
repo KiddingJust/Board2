@@ -19,6 +19,8 @@ public interface BoardService {
 	
 	public int delete(PageParam param);
 	
-	public List<BoardAttachVO> getAttachList(Long bno);
+	public List<BoardAttachVO> getAttachList(int bno);
+	
+	public boolean deleteAll(PageParam param);
 	
 }

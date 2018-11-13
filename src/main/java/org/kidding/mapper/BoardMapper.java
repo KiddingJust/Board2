@@ -33,6 +33,8 @@ public interface BoardMapper {
 	public void deleteFile(String uuid);
 	
 	//첨부파일 불러오기
-	public List<BoardAttachVO> findByBno(Long bno);
+	public List<BoardAttachVO> findByBno(int bno);
+	
+	public void deleteAll(int bno);
 	
 }

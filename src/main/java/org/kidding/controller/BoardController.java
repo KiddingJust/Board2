@@ -1,5 +1,8 @@
 package org.kidding.controller;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
 import org.kidding.domain.BoardAttachVO;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -45,9 +49,16 @@ public class BoardController {
 	}
 	
 	@PostMapping("/remove")
-	public String delete(PageParam param){
+	public String delete(PageParam param, RedirectAttributes rttr){
 		log.info("REMOVED....");
-		service.delete(param);
+		log.info(param);
+		List<BoardAttachVO> attachList = service.getAttachList(param.getBno());
+		
+		if(service.deleteAll(param)){
+			deleteFiles(attachList);
+		
+		rttr.addFlashAttribute("result", "success");
+		}		
 	
 		return "redirect:/board/list?page="+param.getPage();
 	}
@@ -71,7 +82,7 @@ public class BoardController {
 	@GetMapping(value = "/getAttachList",
 			produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	@ResponseBody
-	public ResponseEntity<List<BoardAttachVO>> getAttachList(Long bno){
+	public ResponseEntity<List<BoardAttachVO>> getAttachList(int bno){
 		log.info("getAttachList " + bno );
 		return new ResponseEntity<>(service.getAttachList(bno), HttpStatus.OK);
 	}
@@ -94,5 +105,29 @@ public class BoardController {
 		rttr.addFlashAttribute("result", result==1?"SUCCESS":"FAIL");
 
 		return "redirect:/board/read?page=" + param.getPage() + "&bno=" + vo.getBno();
+	}
+	
+	private void deleteFiles(List<BoardAttachVO> attachList) {
+		if(attachList == null || attachList.size() == 0) {
+			return;
+		}
+		log.info("delete attach files.........");
+		log.info(attachList);
+		
+		attachList.forEach(attach -> {
+			try {
+				Path file = Paths.get("C:\\upload\\" + attach.getUploadPath() + "\\" + attach.getUuid() + "_" + attach.getFileName());
+				Files.deleteIfExists(file);
+				
+				if(Files.probeContentType(file).startsWith("image")) {
+					Path thumbNail = Paths.get("C:\\upload\\" + attach.getUploadPath() + "\\s_" + attach.getUuid() + "_" + attach.getFileName());
+					
+					Files.delete(thumbNail);
+				}
+			}catch(Exception e) {
+				log.error("delete file error" + e.getMessage());
+			}
+		});//end foreach
+	
 	}
 }

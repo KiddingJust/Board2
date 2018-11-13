@@ -19,6 +19,14 @@ public class BoardMapperTests {
 	@Setter(onMethod_=@Autowired)
 	private BoardMapper mapper;
 	
+	@Setter(onMethod_=@Autowired)
+	private ReplyMapper remapper;
+	
+	@Test
+	public void testMapper() {
+		log.info(remapper);
+	}
+	
 	@Test
 	public void TestList() {
 		

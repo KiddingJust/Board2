@@ -70,23 +70,51 @@ public class BoardServiceImpl implements BoardService {
 	}
 	
 	
+	@Transactional
 	@Override
 	public int modify(BoardVO vo) {
+		
+		mapper.deleteAll(vo.getBno());
+		
+		if(vo.getAttachList() == null) {
+			return mapper.modify(vo);
+		}
+		
+		if(vo.getAttachList().size() > 0) {
+			vo.getAttachList().forEach(attach -> {
+			attach.setBno(vo.getBno());
+			mapper.insert(attach);
+			});		
+
+		}
 		return mapper.modify(vo);
 	}
+	
+	
 	@Override
 	public int delete(PageParam param) {
 		return mapper.delete(param);
 	}
+	
 	@Override
-	public List<BoardAttachVO> getAttachList(Long bno) {
+	public List<BoardAttachVO> getAttachList(int bno) {
 		
 		log.info("get Attach list by bno" + bno);
 		
 		return mapper.findByBno(bno);
 	}
+	
+	//첨부파일 삭제와 게시물 삭제 같이 되도록 처리)
+	@Transactional
+	@Override
+	public boolean deleteAll(PageParam param) {
 
+		log.info("deleteAll..." + param.getBno());
+		mapper.deleteAll(param.getBno());
+		return mapper.delete(param) == 1;
+	}
 
+	
 
 
 	
