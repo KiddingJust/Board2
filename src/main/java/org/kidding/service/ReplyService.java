@@ -12,6 +12,7 @@ public interface ReplyService {
 	public ReplyVO getReplyList(int rno);
 	
 	public int modify(ReplyVO vo);
+	
 	public int remove(int rno);
 	
 	public List<ReplyVO> getListWithPaging(ReplyPageDTO dto);
