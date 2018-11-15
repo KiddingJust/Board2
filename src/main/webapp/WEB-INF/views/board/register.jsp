@@ -2,6 +2,7 @@
 	pageEncoding="UTF-8"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 
 <%@include file="../includes/header.jsp"%>
 
@@ -50,7 +51,7 @@
 							<div class="col-md-3 px-1">
 								<div class="form-group">
 									<label>Username</label> <input type="text" name="writer"
-										class="form-control" placeholder="Username">
+										class="form-control" value='<sec:authentication property="principal.username"/>' readonly="readonly">
 								</div>
 							</div>
 							<div class="col-md-4 pl-1">
@@ -220,6 +221,9 @@
 			$.ajax({
 				url: '/deleteFile',
 				data: {fileName: targetFile, type:type},
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				},
 				dataType: 'text',
 				type: 'POST',
 					success: function(result){
@@ -231,12 +235,13 @@
 		});
 		
 		
+		var csrfHeaderName = "${_csrf.headerName}";
+	    var csrfTokenValue = "${_csrf.token}";
 		
-		var cloneObj = $(".uploadDiv").clone();
 		
 		$("#uploadBtn").on("click", function(e){
 			
-			
+			console.log("uploadButton")
 			//jQuery를 사용하는 경우 파일 업로드는 FormData라는 객체를 이용하게 된다. 
 			//이는 가상의 form태그와 같다고 생각하면 된다. (필요한 파라미터를 담아서 전송하는 방식)
 			var formData = new FormData();
@@ -259,6 +264,9 @@
 				url: "/upload",
 				processData: false,
 				contentType: false,
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				},
 				data: formData,
 				type: 'POST',
 				dataType: 'json',
@@ -267,7 +275,6 @@
 					
 					showUploadedFile(result);
 					
-					$(".uploadDiv").html(cloneObj.html());
 				}
 			}); // end ajax
 		});
@@ -290,10 +297,11 @@
 
 		    });
 		    
-		    
+
 			    actionForm.append("<input type='hidden' name='title' value='"+title+"'>");
 			    actionForm.append("<input type='hidden' name='writer' value='"+writer+"'>");
 			    actionForm.append("<input type='hidden' name='content' value='"+content+"'>");
+			    actionForm.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>")
 			    actionForm.append(str);
 				
 				actionForm.attr("action", "/board/register").attr("method", "post").submit();

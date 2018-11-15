@@ -236,7 +236,6 @@
 			return true;
 		}
 
-		var cloneObj = $(".uploadDiv").clone();
 		
 		$("#uploadBtn").on("click", function(e){
 			e.preventDefault();
@@ -257,16 +256,18 @@
 			$.ajax({
 				url: "/upload",
 				processData: false,
-				contentType: false,
+				contentType: false, 
 				data: formData,
 				type: 'POST',
+				beforeSend: function(xhr) {
+					xhr.setRequestHeader(csrfHeaderName, csrfTokenValue);
+				},
 				dataType: 'json',
 				success: function(result){
 					console.log(result);
 					
 					showUploadedFile(result);
 					
-					$(".uploadDiv").html(cloneObj.html());
 				}
 			}); // end ajax
 		});
@@ -321,7 +322,8 @@
 			uploadResult.append(str);
 		};
 		
-
+		var csrfHeaderName = "${_csrf.headerName}";
+	    var csrfTokenValue = "${_csrf.token}";
 		
 		//수정버튼
 		var actionForm = $("#actionForm");
@@ -343,6 +345,7 @@
 			str += "<input type='hidden' name='attachList["+i+"].fileType' value='" + jobj.data("type")+"'>";
 				
 			});
+		    modiForm.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>")
 			modiForm.append(str);
 
 			modiForm.attr("action", "/board/modify").attr("method", "post").submit();
@@ -351,6 +354,7 @@
 			
 		$('#deleteBtn').on("click", function(e){
 			e.preventDefault();
+		    actionForm.append("<input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>")
 			actionForm.attr("action", "/board/remove").attr("method", "post");
 			actionForm.submit();
 		});//수정 및 기타 버튼 클릭 완료 
