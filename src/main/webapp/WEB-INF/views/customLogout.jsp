@@ -143,22 +143,12 @@
 				<div class="col-md-4 login-sec">
 					<h2 class="text-center">Login Now</h2>
 					<form class="login-form" role="form" method='post' action="/login" >
-						<div class="form-group">
-							<label for="exampleInputEmail1" class="text-uppercase">Username</label>
-							<input type="text" name="username" class="form-control" placeholder="">
-
-						</div>
-						<div class="form-group">
-							<label for="exampleInputPassword1" class="text-uppercase">Password</label>
-							<input type="password" name="password" class="form-control" placeholder="">
-						</div>
-
 
 						<div class="form-check">
 							<label class="form-check-label"> <input type="checkbox"
 								class="form-check-input" name="remember-me"> <small>Remember Me</small>
 							</label>
-							<button class="btn btn-login float-right">Submit</button>
+							<button class="btn btn-logout float-right">로그아웃 허쉴?</button>
 						</div>
 						<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}" />
 
@@ -245,7 +235,7 @@
 	<script src="../resources/assets/demo/demo.js"></script>
 
 	<script>
-	$(".btn-login").on("click", function(e){
+	$(".btn-logout").on("click", function(e){
 		e.preventDefault();
 		$("form").submit();
 	})	
