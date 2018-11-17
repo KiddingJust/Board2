@@ -51,7 +51,7 @@ public class BoardMapperTests {
 	public void testRead() {
 		
 		PageParam param = new PageParam();
-		param.setBno(252);
+		param.setBno(269);
 		
 		log.info(mapper.getRead(param));
 //		mapper.getList(param).forEach(board -> log.info(board));

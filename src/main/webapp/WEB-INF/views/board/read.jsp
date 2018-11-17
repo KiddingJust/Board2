@@ -138,41 +138,14 @@
 									<ul class="chat">
 										<li class="left clearfix" data-rno='3'>
 											<div>
-												<div class="header">
-													<strong class="primary-font"></strong> <small
-														class="pull-right text-muted"></small>
-												</div>
+												<strong class="primary-font"></strong>
+												<small class="pull-right text-muted"></small>
 												<p></p>
 											</div>
 										</li>
 									</ul>
 
 
-									<%-- 									<nav aria-label="Page navigation example">
-										<ul class="pagination">
-											<c:if test="${dto.prev}">
-												<li class="page-item"><a class="page-link"
-													href="${dto.start - 1}" aria-label="Previous"> <span
-														aria-hidden="true">&laquo;</span> <span class="sr-only">Previous</span>
-												</a></li>
-											</c:if>
-
-											<c:forEach begin="${dto.start}" end="${dto.end}"
-												var="num">
-												<li class="page-item"><a class="page-link"
-													data-page="${num}" href="${num}"><c:out value="${num}" /></a></li>
-											</c:forEach>
-
-											<c:if test="${dto.next}">
-												<li class="page-item"><a class="page-link"
-													href="${dto.end + 1}" aria-label="Next"> <span
-														aria-hidden="true">&raquo;</span> <span class="sr-only">Next</span>
-												</a></li>
-											</c:if>
-
-										</ul>
-
-									</nav> --%>
 
 									<div class="panel-footer"></div>
 									<button id="addReplyBtn" class="btn btn-primary btn-block"
@@ -241,12 +214,12 @@
 								<div class="modal-body">
 
 									<div class="form-group">
-										<label>내용</label> <input class="form-control" name="reply"
-											value="New 댓글!!!">
+										<label>내용</label>
+										<input class="form-control" name="reply" placeholder="댓글 내용을 입력하세요.">
 									</div>
 									<div class="form-group">
-										<label>작성자</label> <input class="form-control" name="replyer"
-											value='New Reply!!!!'>
+										<label>작성자</label>
+										<input class="form-control" name="replyer" value="<sec:authentication property='principal.username'/>" readonly="readonly">
 									</div>
 									<div class="form-group">
 										<label>작성 날짜</label> <input class="form-control"
@@ -293,6 +266,9 @@
 
 <form id='actionForm'>
 	<input type='hidden' name='page' id='page' value=${pageObj.page}>
+	<input type='hidden' name='display' id='display' value='${pageObj.display}'>
+	<input type='hidden' name='type' value='${pageObj.type}'>
+ 	<input type='hidden' name='keyword' value='${pageObj.keyword}'>
 </form>
 
 <%@include file="../includes/footer.jsp"%>
@@ -320,8 +296,65 @@
 
 						var bnoValue = '<c:out value="${board.bno}"/>';
 						var replyUL = $(".chat");
+						var principal = $("#principal").val();
+						
 						showList(1);
 
+						//댓글 클릭 이벤트
+						$(".chat").on("click","li",function(e){
+							
+							console.log("reply clicked........");
+							var rno = $(this).data("rno");
+							
+							var liObj = $(this).closest("li");
+							$("#myModalLabel")[0].innerHTML = rno + "번 댓글 수정";
+							
+							replyService.get(rno,function(reply){
+								
+								modalInputReply.val(reply.reply);
+								modalInputReplyer.val(reply.replyer).attr("readonly","readonly");
+								modalInputRegDate.val(replyService.displayTime(reply.replydate)).attr("readonly","readonly");
+								modal.data("rno",reply.rno);
+								
+								modal.find("button[id !='modalCloseBtn']").hide();
+								modalModBtn.show();
+								modalRemoveBtn.show();
+								
+								if(reply.id !== principal){
+									modalRemoveBtn.hide();
+									modalModBtn.hide();
+								}
+								
+								$(".modal").modal("show");
+							});
+						});
+						
+					  	//searchbox 코드
+						$("#searchBtn").on("click", function(e){
+							
+							var searchTypeValue = $("select[name='search'] option:selected").val();
+							console.log(searchTypeValue);
+							
+							var searchKeyword = $("input[name='searchText']").val();
+							console.log(searchKeyword);
+							
+							if(searchKeyword.trim().length == 0 ){
+								alert("검색어 없음");
+								return;
+							}
+							
+							actionForm.attr("action","/board/list");
+							actionForm.find("input[name='type']").val(searchTypeValue);
+							actionForm.find("input[name='keyword']").val(searchKeyword);
+							$("#page").val(1);
+							
+							actionForm.submit();
+						});
+						
+						var pageNum = ${pageObj.page};
+					    var actionForm = $("#actionForm");
+					    
+					    
 						//리플 추가
 						function showList(page) {
 
@@ -347,7 +380,7 @@
 												}
 												for (var i = 0, len = list.length || 0; i < len; i++) {
 													str += "<li class='left clearfix' data-rno='" + list[i].rno + "'>";
-													str += " <div><div class='header'><strong class='primary-font'>"
+													str += " <div><strong class='primary-font'>"
 															+ list[i].replyer
 															+ "</strong>";
 													str += "   <small class='pull-right text-muted'>"
@@ -356,7 +389,7 @@
 															+ "</small>";
 													str += "     <p>"
 															+ list[i].reply
-															+ "</p></div></div></li>";
+															+ "</p></div></li>";
 												}
 												replyUL.html(str);
 												showReplyPage(dto);
@@ -420,9 +453,18 @@
 						var modalRemoveBtn = $("#modalRemoveBtn");
 						var modalRegisterBtn = $("#modalRegisterBtn");
 
+						//csrf처리
+						var csrfHearderName = "${_csrf.headerName}";
+						var csrfTokenValue = "${_csrf.token}";
+						
+						$(document).ajaxSend(function(e,xhr,options){
+							xhr.setRequestHeader(csrfHearderName, csrfTokenValue);
+						});
+						
 						$("#addReplyBtn").on("click", function(e) {
 
 							modal.find("input").val("");
+							modalInputReplyer.val("<sec:authentication property='principal.username'/>");
 							modalInputRegDate.closest("div").hide();
 							modal.find("button[id != 'modalCloseBtn']").hide();
 

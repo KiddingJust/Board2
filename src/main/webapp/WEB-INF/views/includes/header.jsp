@@ -110,25 +110,29 @@
             <span class="navbar-toggler-bar navbar-kebab"></span>
           </button>
           <div class="collapse navbar-collapse justify-content-end" id="navigation">
-            <form>
-              <div class="input-group no-border">
-                <input type="text" value="" class="form-control" placeholder="Search...">
+			<div>
+			<select name="search">
+               <option value="tcw" ${pageObj.type == "tc" ? "selected":""}>전체</option>
+               <option value="t" ${pageObj.type == "t" ? "selected":""}>제목</option>
+               <option value="w" ${pageObj.type == "w" ? "selected":""}>작성자</option>
+               <option value="c" ${pageObj.type == "c" ? "selected":""}>내용</option>
+               <option value="tc" ${pageObj.type == "tc" ? "selected":""}>제목+내용</option>
+               <option value="tw" ${pageObj.type == "tc" ? "selected":""}>제목+작성자</option>
+               <option value="cw" ${pageObj.type == "tc" ? "selected":""}>작성자+내용</option>
+               
+            </select>
+			</div>
+			<div class="col-md-3">
+              <div class="input-group no-border" >
+                <input name = searchText type="text" value="${pageObj.keyword}" class="form-control" placeholder="Search...">
                 <div class="input-group-append">
                   <div class="input-group-text">
-                    <i class="now-ui-icons ui-1_zoom-bold"></i>
+                    <i id = searchBtn class="now-ui-icons ui-1_zoom-bold"></i>
                   </div>
                 </div>
               </div>
-            </form>
+              </div>
             <ul class="navbar-nav">
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
-                  <i class="now-ui-icons media-2_sound-wave"></i>
-                  <p>
-                    <span class="d-lg-none d-md-block">Stats</span>
-                  </p>
-                </a>
-              </li>
               <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="now-ui-icons location_world"></i>
@@ -142,13 +146,22 @@
                   <a class="dropdown-item" href="#">Something else here</a>
                 </div>
               </li>
-              <li class="nav-item">
-                <a class="nav-link" href="#pablo">
+              
+              <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <i class="now-ui-icons users_single-02"></i>
                   <p>
-                    <span class="d-lg-none d-md-block">Account</span>
+                    <span class="d-lg-none d-md-block">Some Actions</span>
                   </p>
                 </a>
+                <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdownMenuLink">
+                  <a class="dropdown-item" href="#">Account</a>
+					
+				  <form action="/customLogout" method='post'>
+				  <input type='hidden' name='${_csrf.parameterName}' value='${_csrf.token}'/>
+                  <a href="/customLogout" class="dropdown-item">Logout</a>
+                  </form>
+                </div>
               </li>
             </ul>
           </div>

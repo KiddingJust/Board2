@@ -12,9 +12,9 @@
       <property name="driverClassName"
          value="com.mysql.cj.jdbc.Driver"></property>
       <property name="jdbcUrl"
-         value="jdbc:mysql://10.10.10.102:3306/gaigaboard?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true"></property>
+         value="jdbc:mysql://10.85.223.194/gaiga?useSSL=false&amp;serverTimezone=Asia/Seoul&amp;allowPublicKeyRetrieval=true"></property>
       <property name="username" value="gaiga"></property>
-      <property name="password" value="gaiga"></property>
+      <property name="password" value="ahffkd18!"></property>
    </bean>
 
    <bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource">

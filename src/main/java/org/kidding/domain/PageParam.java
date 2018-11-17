@@ -56,13 +56,5 @@ public class PageParam {
 		return (this.page - 1) * this.display;
 	}
 	
-	//test
-	public static void main(String[] args) {
-		PageParam param = new PageParam();
-		param.setPage(1);
-		param.setTotal(111);
-		
-		System.out.println(param);
-	}
 	
 }

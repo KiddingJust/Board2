@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.kidding.domain.ReplyPageDTO;
 import org.kidding.domain.ReplyVO;
+import org.kidding.service.BoardService;
 import org.kidding.service.ReplyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
