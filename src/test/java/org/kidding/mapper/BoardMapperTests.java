@@ -23,6 +23,11 @@ public class BoardMapperTests {
 	private ReplyMapper remapper;
 	
 	@Test
+	public void testChart() {
+		log.info(mapper.getChart());
+	}
+	
+	@Test
 	public void testMapper() {
 		log.info(remapper);
 	}

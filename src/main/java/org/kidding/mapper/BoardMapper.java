@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
+import org.kidding.domain.ChartVO;
 import org.kidding.domain.PageParam;
 
 public interface BoardMapper {
@@ -36,5 +37,7 @@ public interface BoardMapper {
 	public List<BoardAttachVO> findByBno(int bno);
 	
 	public void deleteAll(int bno);
+	
+	public List<ChartVO> getChart();
 	
 }

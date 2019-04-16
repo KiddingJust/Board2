@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
+import org.kidding.domain.ChartVO;
 import org.kidding.domain.PageParam;
 import org.kidding.mapper.BoardMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -112,6 +113,12 @@ public class BoardServiceImpl implements BoardService {
 		log.info("deleteAll..." + param.getBno());
 		mapper.deleteAll(param.getBno());
 		return mapper.delete(param) == 1;
+	}
+	@Override
+	public List<ChartVO> getChart() {
+		log.info("chart를 불러옵니다....");
+		
+		return mapper.getChart();
 	}
 
 	

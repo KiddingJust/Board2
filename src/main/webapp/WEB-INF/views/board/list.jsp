@@ -175,6 +175,11 @@
 		<div class="col-md-12">
 			<div class="card">
 				<div class="card-header">
+					<div>
+						여기에 차트를 넣어보자.
+					    <div id="chart_div"></div>
+						<button id="btn" type="button" onclick="drawChart()">refresh</button>
+					</div>	
 					<h4 class="card-title">Free Board</h4>
 					<div>
 				<select id="select"floa>
@@ -257,11 +262,58 @@
 
 <%@include file="../includes/footer.jsp"%>
 
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 <script>
 
 $(document).ready(function(){
 	
+    // Load the Visualization API and the corechart package.
+    google.charts.load('current', {'packages':['corechart']});
+    // Set a callback to run when the Google Visualization API is loaded.
+    google.charts.setOnLoadCallback(drawChart);
 	
+    // Callback that creates and populates a data table,
+    // instantiates the pie chart, passes in the data and
+    // draws it.
+/*     function drawChart() {
+
+      // Create the data table.
+      var data = new google.visualization.DataTable();
+      data.addColumn('string', 'Topping');
+      data.addColumn('number', 'Slices');
+      data.addRows([
+        ['Mushrooms', 3],
+        ['Onions', 1],
+        ['Olives', 1],
+        ['Zucchini', 1],
+        ['Pepperoni', 2]
+      ]);
+
+      // Set chart options
+      var options = {'title':'How Much Pizza I Ate Last Night',
+                     'width':400,
+                     'height':300};
+
+      // Instantiate and draw our chart, passing in some options.
+      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+      chart.draw(data, options);
+    } */
+    
+    function drawChart(){
+    	var jsonData = $.ajax({
+    		url: "/board/list",
+    		type: "post",
+    		dataType: "json",
+    		async: false
+    	}).responseText;
+    	
+    	var data = new google.visualization.DataTable(jsonData);
+    	
+    	var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+    	chart.draw(data, {width: 400, height: 240});
+    }
+    
+    
 	//Modal 실행
     var result = '<c:out value="${result}"/>';
     checkModal(result);

@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
+import org.kidding.domain.ChartVO;
 import org.kidding.domain.PageParam;
 
 public interface BoardService {
@@ -23,5 +24,7 @@ public interface BoardService {
 	public List<BoardAttachVO> getAttachList(int bno);
 	
 	public boolean deleteAll(PageParam param);
+	
+	public List<ChartVO> getChart();
 	
 }

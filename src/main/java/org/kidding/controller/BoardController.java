@@ -7,6 +7,7 @@ import java.util.List;
 
 import org.kidding.domain.BoardAttachVO;
 import org.kidding.domain.BoardVO;
+import org.kidding.domain.ChartVO;
 import org.kidding.domain.PageParam;
 import org.kidding.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,6 +43,15 @@ public class BoardController {
 		
 		param.setTotal(service.getTotal(param));
 		model.addAttribute("list", service.getList(param));
+	}
+	
+	@PostMapping(value = "/list",
+			produces = {
+					MediaType.APPLICATION_XML_VALUE,
+					MediaType.APPLICATION_JSON_UTF8_VALUE})
+	public ResponseEntity<List<ChartVO>> getChart(){
+		log.info("get: " + service.getChart());
+		return new ResponseEntity<>(service.getChart(), HttpStatus.OK);
 	}
 	
 	@GetMapping("/register")

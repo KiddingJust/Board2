@@ -7,6 +7,10 @@
  <!-- 인터페이스와 동일하게 이름을 맞추어주어야 함. 메소드 이름은 id-->
  <mapper namespace="org.kidding.mapper.BoardMapper">
  	
+ 	<select id="getChart" resultType="org.kidding.domain.ChartVO">
+ 		select * from tbl_chart;
+ 	</select>
+ 	
  	<select id="getTotal" resultType="Integer">
  		select count(*) from tbl_board
  		<where>
@@ -91,4 +95,6 @@
  	<delete id="deleteAll">
  	delete from tbl_attach where bno = #{bno}
  	</delete>
+ 	
+
  </mapper>
