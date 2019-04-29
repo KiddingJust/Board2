@@ -21,9 +21,18 @@
   <!-- CSS Just for demo purpose, don't include it in your project -->
   <link href="../resources/assets/demo/demo.css" rel="stylesheet" />
   
+
+  <link href="../resources/assets/css/c3.css" rel="stylesheet">
+  
+  
+  
 </head>
 
 <body class="">
+<script src="../resources/assets/js/ds.v5.min.js"></script>
+<script src="../resources/assets/js/c3.min.js"></script>
+
+
   <div class="wrapper ">
     <div class="sidebar" data-color="orange">
       <!--
@@ -174,13 +183,11 @@
 	<div class="row">
 		<div class="col-md-12">
 			<div class="card">
-				<div class="card-header">
-					<div>
-						여기에 차트를 넣어보자.
-					    <div id="chart_div"></div>
-						<button id="btn" type="button" onclick="drawChart()">refresh</button>
-					</div>	
+				<div class="card-header">	
 					<h4 class="card-title">Free Board</h4>
+					
+									<div id="chart"></div> //출력
+					
 					<div>
 				<select id="select"floa>
                <option value="10" ${pageObj.display == 10 ? "selected":""}>10</option>
@@ -190,6 +197,7 @@
             	</select> 
 					</div>
 
+				      
 				      
 				<div class="col-md-2" style="float: right">
 
@@ -266,38 +274,25 @@
 <script>
 
 $(document).ready(function(){
-	
-    // Load the Visualization API and the corechart package.
-    google.charts.load('current', {'packages':['corechart']});
-    // Set a callback to run when the Google Visualization API is loaded.
-    google.charts.setOnLoadCallback(drawChart);
-	
-    // Callback that creates and populates a data table,
-    // instantiates the pie chart, passes in the data and
-    // draws it.
-/*     function drawChart() {
-
-      // Create the data table.
-      var data = new google.visualization.DataTable();
-      data.addColumn('string', 'Topping');
-      data.addColumn('number', 'Slices');
-      data.addRows([
-        ['Mushrooms', 3],
-        ['Onions', 1],
-        ['Olives', 1],
-        ['Zucchini', 1],
-        ['Pepperoni', 2]
-      ]);
-
-      // Set chart options
-      var options = {'title':'How Much Pizza I Ate Last Night',
-                     'width':400,
-                     'height':300};
-
-      // Instantiate and draw our chart, passing in some options.
-      var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-      chart.draw(data, options);
-    } */
+	    
+    var chart = c3.generate({ 
+        bindto: '#chart',
+        data: {
+          columns: [
+            ['data1', 10, 20, 30, 40, 50, 60],
+            ['data2', 200, 10, 150, 20, 100, 30]
+          ],
+          axes: {
+            data2: 'y2' // ADD
+          }
+        },
+        axis: {
+          y2: {
+            show: true // ADD
+          }
+        }
+    });
+    
     
     function drawChart(){
     	var jsonData = $.ajax({
